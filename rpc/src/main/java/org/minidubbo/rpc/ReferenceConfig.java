@@ -47,7 +47,7 @@ public class ReferenceConfig<T> {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 //发起远程调用,这里先简单打印一下
-                System.out.println("rpc 1.0");
+                System.out.println("rpc 1.0,发起了一次网络请求");
                 return "success";
             }
         };
