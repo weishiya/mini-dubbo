@@ -8,7 +8,7 @@ public class Consumer {
     private HelloService helloService;
 
     public String sayHello(){
-        String result = helloService.hello("i am consumer");
+        String result = helloService.hello();
         return result;
     }
 
@@ -16,7 +16,7 @@ public class Consumer {
         ReferenceConfig<HelloService> referenceConfig = new ReferenceConfig<>();
         referenceConfig.setInterfaceClass(HelloService.class);
         HelloService helloService = referenceConfig.get();
-        String result = helloService.hello("i am consumer");
+        String result = helloService.hello();
         System.out.println(result);
     }
 }
