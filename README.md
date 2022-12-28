@@ -8,5 +8,5 @@
 
 3.分支provider-server模块，是provider启动了网络服务，端口是20883，这就意味着外界可以通过网络请求访问provider。运行provider的main方法，然后在浏览器输入http://127.0.0.1:20883/hello
 可以看到浏览器通过http请求访问到了HelloServiceImpl的hello方法。可以想到，只要在consumer端的代理对象发起一次http请求，就是一次rpc调用了（感兴趣可以自己实现一下）。
-这里为了演示方便，网络协议采用了最常见的http协议，为了consumer和provider端更高效快速的通信，就要开发更简单的长连接的dubbo协议。
+这里为了演示方便，网络协议采用了最常见的http协议，http协议用在网络通信有俩个问题，一个是短链接，另外一个是报文格式过于臃肿，一个公司集群内网通信不用这么复杂，为了consumer和provider端更高效快速的通信，就要开发更简单的长连接的dubbo协议。
 
