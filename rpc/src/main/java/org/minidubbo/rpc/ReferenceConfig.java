@@ -16,6 +16,12 @@ public class ReferenceConfig<T> {
 
     private InvocationHandler invocationHandler;
 
+    private Protocol protocol;
+
+    private String consumerUrl;
+
+    private URL url;
+
     public void setInterfaceClass(Class<?> interfaceClass){
         this.interfaceClass = interfaceClass;
     }
@@ -33,24 +39,36 @@ public class ReferenceConfig<T> {
     }
     //init
     private void init(){
+        //初始化代理工厂
         initProxyFactory();
-        initInvocationHandler();
+        //构建url
+        buildUrl();
+        //创建invoker
+        Invoker invoker = createInvoker();
+        //创建代理类所需要的invocationHandler
+        initInvocationHandler(invoker);
+        //创建代理
         createProxy();
     }
     //初始化代理工厂
     private void initProxyFactory(){
         proxyFactory = new JDKProxyFactory();
     }
-    //初始化代理要做的事情
-    private void initInvocationHandler() {
-        invocationHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                //发起远程调用,这里先简单打印一下
-                System.out.println("rpc 1.0,发起了一次网络请求");
-                return "success";
-            }
-        };
+
+    private void buildUrl(){
+        this.consumerUrl = "consumer://127.0.0.1:20880/"+interfaceClass.getName();
+        url = parse(consumerUrl);
+    }
+
+    private URL parse(String consumerUrl) {
+        return null;
+    }
+    private Invoker createInvoker(){
+        return protocol.refer(interfaceClass,url);
+    }
+    //初始化代理类要做的事情
+    private void initInvocationHandler(Invoker invoker) {
+        invocationHandler = new InvokerInvocationHandler(invoker);
     }
     //create proxy
     private void createProxy(){
