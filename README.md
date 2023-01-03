@@ -1,6 +1,8 @@
 # mini-dubbo
 从0到1写一个简易版得dubbo框架，旨在讲解dubbo原理
 
+分为4个大部分，用不同的分支一步步演化成一个完整的rpc框架，第一部分是简单的rpc模型演示，第二部分是dubbo协议的封装，包括网络协议和hessian协议进行序列化，第三部分是引入注册中心进行provider服务暴露和consumer服务发现，第四部分是集群容错和负载均衡，第五部分是SPI扩展
+
 1.分支 provider-and-consumer 是一个最简单的rpc模型
 可以看到，provider模块依赖的provider-api模块对HelloService进行了实现，consumer想调用HelloService的hello方法。
 
