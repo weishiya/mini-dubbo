@@ -1,7 +1,7 @@
-package org.minidubbo.rpc;
+package org.minidubbo.exeception;
 
 /**
- * 发起网络调用
+ * consumer发起网络调用、provider触发本地调用
  * @param <T>
  */
 public interface Invoker<T> {

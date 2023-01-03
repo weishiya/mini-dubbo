@@ -1,4 +1,4 @@
-package org.minidubbo.rpc;
+package org.minidubbo.exeception;
 
 /**
  * 协议类

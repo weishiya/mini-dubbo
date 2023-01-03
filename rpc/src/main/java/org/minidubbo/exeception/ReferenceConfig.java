@@ -1,10 +1,13 @@
-package org.minidubbo.rpc;
+package org.minidubbo.exeception;
 
-import org.minidubbo.rpc.proxy.JDKProxyFactory;
-import org.minidubbo.rpc.proxy.ProxyFactory;
+
+import org.minidubbo.common.Consant;
+import org.minidubbo.common.NetUtil;
+import org.minidubbo.exeception.proxy.JDKProxyFactory;
+import org.minidubbo.exeception.proxy.ProxyFactory;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.net.InetAddress;
 
 public class ReferenceConfig<T> {
 
@@ -18,9 +21,11 @@ public class ReferenceConfig<T> {
 
     private Protocol protocol;
 
-    private String consumerUrl;
-
     private URL url;
+
+    private String group;
+
+    private String version;
 
     public void setInterfaceClass(Class<?> interfaceClass){
         this.interfaceClass = interfaceClass;
@@ -56,13 +61,20 @@ public class ReferenceConfig<T> {
     }
 
     private void buildUrl(){
-        this.consumerUrl = "consumer://127.0.0.1:20880/"+interfaceClass.getName();
-        url = parse(consumerUrl);
+        URL url = new URL();
+        InetAddress localAddress = NetUtil.getLocalAddress();
+        url.setIp(localAddress.getHostAddress());
+        url.setProtocol(Consant.CONSUMER_PROTOCOL);
+        url.setInterfaceName(interfaceClass.getName());
+        if(group != null){
+            url.putParams(Consant.GROUP_KEY,group);
+        }
+        if(version!=null){
+            url.putParams(Consant.VERSION_KEY,group);
+        }
+        this.url = url;
     }
 
-    private URL parse(String consumerUrl) {
-        return null;
-    }
     private Invoker createInvoker(){
         return protocol.refer(interfaceClass,url);
     }
@@ -74,4 +86,6 @@ public class ReferenceConfig<T> {
     private void createProxy(){
         ref = (T) proxyFactory.getProxy(interfaceClass,invocationHandler);
     }
+
+
 }

@@ -1,4 +1,4 @@
-package org.minidubbo.rpc;
+package org.minidubbo.exeception;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
