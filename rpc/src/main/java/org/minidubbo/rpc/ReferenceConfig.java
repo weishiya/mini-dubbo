@@ -1,10 +1,10 @@
-package org.minidubbo.exeception;
+package org.minidubbo.rpc;
 
 
 import org.minidubbo.common.Consant;
 import org.minidubbo.common.NetUtil;
-import org.minidubbo.exeception.proxy.JDKProxyFactory;
-import org.minidubbo.exeception.proxy.ProxyFactory;
+import org.minidubbo.rpc.proxy.JDKProxyFactory;
+import org.minidubbo.rpc.proxy.ProxyFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.net.InetAddress;

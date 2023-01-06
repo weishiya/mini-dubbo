@@ -1,4 +1,6 @@
-package org.minidubbo.exeception;
+package org.minidubbo.rpc;
+
+import org.minidubbo.rpc.exception.RpcException;
 
 /**
  * consumer发起网络调用、provider触发本地调用
@@ -16,5 +18,7 @@ public interface Invoker<T> {
      * @param invocation
      * @return
      */
-    Result invoke(Invocation invocation);
+    Result invoke(Invocation invocation) throws RpcException;
+
+    URL getUrl();
 }

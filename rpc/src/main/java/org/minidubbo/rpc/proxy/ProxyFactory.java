@@ -1,7 +1,7 @@
-package org.minidubbo.exeception.proxy;
+package org.minidubbo.rpc.proxy;
 
-import org.minidubbo.exeception.Invoker;
-import org.minidubbo.exeception.URL;
+import org.minidubbo.rpc.Invoker;
+import org.minidubbo.rpc.URL;
 
 import java.lang.reflect.InvocationHandler;
 

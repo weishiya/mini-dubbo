@@ -1,7 +1,7 @@
 package org.minidubbo.provider.impl;
 
 import org.minidubbo.api.HelloService;
-import org.minidubbo.exeception.ServiceConfig;
+import org.minidubbo.rpc.ServiceConfig;
 
 import java.util.concurrent.CountDownLatch;
 

@@ -1,24 +1,17 @@
-package org.minidubbo.exeception;
+package org.minidubbo.rpc;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.*;
-import io.netty.util.ReferenceCountUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.common.Consant;
 import org.minidubbo.common.NetUtil;
-import org.minidubbo.exeception.proxy.JDKProxyFactory;
-import org.minidubbo.exeception.proxy.ProxyFactory;
+import org.minidubbo.rpc.protocol.DubboProtocol;
+import org.minidubbo.rpc.proxy.JDKProxyFactory;
+import org.minidubbo.rpc.proxy.ProxyFactory;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-
+@Slf4j
 public class ServiceConfig<T> {
     private T ref;
 
@@ -69,15 +62,21 @@ public class ServiceConfig<T> {
             //创建invoker
             Invoker<?> invoker = createInvoker();
             //发布服务
-            doExport(invoker);
+            Exporter<?> exporter = doExport(invoker);
 
-            this.exported = true;
-            System.out.println("export success");
+            if(exporter.isExported()){
+                this.exported = true;
+                log.info("export success");
+            }else {
+                log.info("export failed");
+            }
+
 
         }
     }
 
     private void initProtocol() {
+        protocol = new DubboProtocol();
     }
 
     private void buildURL() {
@@ -93,6 +92,7 @@ public class ServiceConfig<T> {
         if(version!=null){
             url.putParams(Consant.VERSION_KEY,group);
         }
+        this.providerUrl = url;
     }
 
     private void initProxyFactory() {
@@ -104,8 +104,8 @@ public class ServiceConfig<T> {
     }
 
 
-    private void doExport(Invoker<?> invoker) {
-        protocol.export(invoker);
+    private  Exporter<?> doExport(Invoker<?> invoker) {
+        return protocol.export(invoker);
     }
 
     public void shutdown(){

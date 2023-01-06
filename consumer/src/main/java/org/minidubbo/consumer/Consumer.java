@@ -1,7 +1,7 @@
 package org.minidubbo.consumer;
 
 import org.minidubbo.api.HelloService;
-import org.minidubbo.exeception.ReferenceConfig;
+import org.minidubbo.rpc.ReferenceConfig;
 
 public class Consumer {
 

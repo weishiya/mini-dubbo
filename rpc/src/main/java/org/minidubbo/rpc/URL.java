@@ -1,4 +1,4 @@
-package org.minidubbo.exeception;
+package org.minidubbo.rpc;
 
 import io.netty.util.internal.StringUtil;
 import org.minidubbo.common.Consant;

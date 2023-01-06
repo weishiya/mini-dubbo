@@ -1,4 +1,4 @@
-package org.minidubbo.exeception;
+package org.minidubbo.rpc;
 
 /**
  * 网络调用入参
