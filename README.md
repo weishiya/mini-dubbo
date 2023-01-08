@@ -15,3 +15,5 @@
 4.分支invoker模块，在封装协议以前，先抽象出来常用的组件，免得代码越写越乱，对常用的组件做了一层抽象，关注一下ServiceConfig的export方法和ReferenceConfig的get方法，可以看到对以前的逻辑进行了一些封装。Protocol，Invoker，URL等组件的作用均在注释中写明。
 
 5.分支protocol模块，JDKProxyFactory的getInvoker实现了provider端要使用的invoker，dubbo export方法对服务进行了暴露（还需要定义编解码器来实现dubbo协议），运行provider的main方法可以看到网络端口依据开启。
+
+6.分支protocol-refer模块，DubboProtocol实现了refer方法，启动客户端链接server，运行provider的main方法，然后运行Consumer的main，可以看到provider控制台输出了日志 client connected，AbstractInvoker的注释留意一下，可以考虑服务端的返回数据包的时候怎么唤醒线程。因为现在还没定义编解码器，还不能发送数据包。接下来就是第二大章节，封装协议。
