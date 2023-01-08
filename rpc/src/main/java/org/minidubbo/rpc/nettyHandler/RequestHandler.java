@@ -1,6 +1,7 @@
 package org.minidubbo.rpc.nettyHandler;
 
 import com.alibaba.fastjson.JSON;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.minidubbo.rpc.exception.RpcException;
 import java.net.SocketAddress;
 
 @Slf4j
+@ChannelHandler.Sharable
 public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
@@ -48,6 +50,13 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
             response.setStatus(Response.APP_ERROR);
             response.setErrorMessage(e.getMessage());
         }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        SocketAddress socketAddress = ctx.channel().remoteAddress();
+        log.info("client disconnected ,it's address is: {}",socketAddress);
+        ctx.fireChannelActive();
     }
 
     public abstract Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException;
