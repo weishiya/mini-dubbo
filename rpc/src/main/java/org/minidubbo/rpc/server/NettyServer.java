@@ -6,6 +6,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.URL;
@@ -35,7 +37,6 @@ public class NettyServer {
         workerGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
         bootstrap.group(bossGroup,workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE)
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
@@ -44,6 +45,7 @@ public class NettyServer {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
                         //todo 添加编解码器
+                        //ch.pipeline().addLast("XXX编解码器");
                         pipeline.addLast(requestHandler);
                     }
                 });

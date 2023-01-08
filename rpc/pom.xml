@@ -14,6 +14,8 @@
         <log4j2.version>2.11.1</log4j2.version>
         <junit.version>4.12</junit.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <fastjson.verson>1.2.76</fastjson.verson>
+
     </properties>
 
     <dependencies>
@@ -61,6 +63,12 @@
             <artifactId>lombok</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.verson}</version>
         </dependency>
 
     </dependencies>

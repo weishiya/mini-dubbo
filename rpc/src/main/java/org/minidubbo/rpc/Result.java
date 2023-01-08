@@ -13,4 +13,6 @@ public interface Result extends Serializable {
     void setException(Throwable t);
 
     boolean hasException();
+
+    Object recreate() throws Throwable;
 }

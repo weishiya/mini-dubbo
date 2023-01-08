@@ -2,6 +2,7 @@ package org.minidubbo.rpc.invoker;
 
 import org.minidubbo.rpc.*;
 import org.minidubbo.rpc.exception.RpcException;
+import org.minidubbo.rpc.result.RpcResult;
 
 public abstract class AbstractProxyInvoker<T> implements Invoker {
     private final T proxy;

@@ -19,7 +19,7 @@ public interface ProxyFactory {
     <T> T getProxy(Class<T> clazz, InvocationHandler invocationHandler);
 
     /**
-     * 生成invoker，provider端生成
+     * 生成invoker，provider端使用
      * @param ref
      * @param clazz
      * @param url

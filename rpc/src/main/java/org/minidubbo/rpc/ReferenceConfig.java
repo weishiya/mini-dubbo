@@ -3,6 +3,7 @@ package org.minidubbo.rpc;
 
 import org.minidubbo.common.Consant;
 import org.minidubbo.common.NetUtil;
+import org.minidubbo.rpc.protocol.DubboProtocol;
 import org.minidubbo.rpc.proxy.JDKProxyFactory;
 import org.minidubbo.rpc.proxy.ProxyFactory;
 
@@ -48,6 +49,8 @@ public class ReferenceConfig<T> {
         initProxyFactory();
         //构建url
         buildUrl();
+
+        initProtocol();
         //创建invoker
         Invoker invoker = createInvoker();
         //创建代理类所需要的invocationHandler
@@ -55,6 +58,7 @@ public class ReferenceConfig<T> {
         //创建代理
         createProxy();
     }
+
     //初始化代理工厂
     private void initProxyFactory(){
         proxyFactory = new JDKProxyFactory();
@@ -73,6 +77,10 @@ public class ReferenceConfig<T> {
             url.putParams(Consant.VERSION_KEY,group);
         }
         this.url = url;
+    }
+
+    private void initProtocol() {
+        protocol = new DubboProtocol();
     }
 
     private Invoker createInvoker(){

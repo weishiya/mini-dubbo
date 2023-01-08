@@ -4,7 +4,21 @@ import java.io.Serializable;
 
 public class RpcException  extends RuntimeException {
 
-    private int code;
+    public static final int TIMEOUT = 501;
+
+    public static final int CHANNEL_NOT_CONNECTED = 502;
+
+    public static final int UNKNOWN = 503;
+
+    public static final int INTERNAL = 504;
+
+    public static final int SERVICE_NOT_FOUND = 504;
+
+    private int code = UNKNOWN;
+
+    public int getCode(){
+        return code;
+    }
 
     public RpcException(String message, Throwable cause) {
         super(message, cause);

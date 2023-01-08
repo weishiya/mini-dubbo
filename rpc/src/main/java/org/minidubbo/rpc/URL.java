@@ -1,6 +1,7 @@
 package org.minidubbo.rpc;
 
 import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.minidubbo.common.Consant;
 
 import java.io.Serializable;
@@ -83,11 +84,11 @@ public class URL implements Serializable {
         length += version == null ? 0 : version.length();
         length += 3;
         StringBuilder buf = new StringBuilder(length);
-        if (StringUtil.isNullOrEmpty(group)){
+        if (StringUtils.isNotEmpty(group)) {
             buf.append(group).append('/');
         }
         buf.append(path);
-        if (StringUtil.isNullOrEmpty(version)) {
+        if (StringUtils.isNotEmpty(version)) {
             buf.append(':').append(version);
         }
         return buf.toString().intern();

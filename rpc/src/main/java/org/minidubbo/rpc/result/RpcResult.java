@@ -1,6 +1,11 @@
-package org.minidubbo.rpc;
+package org.minidubbo.rpc.result;
 
-public class RpcResult implements Result{
+import org.minidubbo.rpc.Result;
+
+/**
+ * 包装provider端应用返回的结果
+ */
+public class RpcResult implements Result {
 
     private static final long serialVersionUID = -1L;
 
@@ -31,5 +36,13 @@ public class RpcResult implements Result{
     @Override
     public boolean hasException() {
         return exception==null;
+    }
+
+    @Override
+    public Object recreate() throws Throwable{
+        if(exception!=null){
+            throw exception;
+        }
+        return value;
     }
 }
