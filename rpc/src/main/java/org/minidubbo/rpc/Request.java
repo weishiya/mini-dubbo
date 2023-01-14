@@ -8,6 +8,10 @@ public class Request implements Serializable {
     private final static AtomicLong ID_GENERATOR = new AtomicLong(0);
     private final long id;
     private final Object data;
+    public Request(long id,Object data){
+        this.id = id;
+        this.data = data;
+    }
     public Request(Object data){
         this.data = data;
         this.id = ID_GENERATOR.getAndIncrement();

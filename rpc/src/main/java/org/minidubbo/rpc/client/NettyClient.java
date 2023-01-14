@@ -11,7 +11,10 @@ import org.minidubbo.rpc.Client;
 import org.minidubbo.rpc.DefaultFuture;
 import org.minidubbo.rpc.Request;
 import org.minidubbo.rpc.URL;
+import org.minidubbo.rpc.codec.FastjsonSerialization;
 import org.minidubbo.rpc.exception.RpcException;
+import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
+import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -50,6 +53,8 @@ public class NettyClient implements Client {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         //todo 添加编解码器
                         //ch.pipeline().addLast("XXX编解码器");
+                        ch.pipeline().addLast(new DubboEncodeHandler(new FastjsonSerialization()));
+                        ch.pipeline().addLast(new DubboDecoderHandler());
                         ch.pipeline().addLast(clientHandler);
                     }
                 });

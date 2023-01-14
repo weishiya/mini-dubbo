@@ -11,6 +11,9 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.URL;
+import org.minidubbo.rpc.codec.FastjsonSerialization;
+import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
+import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
 
 
 @Slf4j
@@ -46,6 +49,8 @@ public class NettyServer {
                         ChannelPipeline pipeline = ch.pipeline();
                         //todo 添加编解码器
                         //ch.pipeline().addLast("XXX编解码器");
+                        pipeline.addLast(new DubboEncodeHandler(new FastjsonSerialization()));
+                        pipeline.addLast(new DubboDecoderHandler());
                         pipeline.addLast(requestHandler);
                     }
                 });
