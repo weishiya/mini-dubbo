@@ -17,3 +17,5 @@
 5.分支protocol模块，JDKProxyFactory的getInvoker实现了provider端要使用的invoker，dubbo export方法对服务进行了暴露（还需要定义编解码器来实现dubbo协议），运行provider的main方法可以看到网络端口依据开启。
 
 6.分支protocol-refer模块，DubboProtocol实现了refer方法，启动客户端链接server，运行provider的main方法，然后运行Consumer的main，可以看到provider控制台输出了日志 client connected，AbstractInvoker的注释留意一下，可以考虑服务端的返回数据包的时候怎么唤醒线程。因为现在还没定义编解码器，还不能发送数据包。接下来就是第二大章节，封装协议。
+
+7.分支minidubbo-protocol封装了协议
