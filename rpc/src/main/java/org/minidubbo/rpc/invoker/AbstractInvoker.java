@@ -1,5 +1,6 @@
 package org.minidubbo.rpc.invoker;
 
+import org.minidubbo.common.Consant;
 import org.minidubbo.rpc.Invocation;
 import org.minidubbo.rpc.Invoker;
 import org.minidubbo.rpc.Result;
@@ -32,7 +33,8 @@ public abstract class AbstractInvoker<T> implements Invoker {
         try {
             //这里做成阻塞的,等待线程唤醒，可以考虑一下会在那里唤醒线程？
             //todo 后续会用时间轮算法处理超时
-            Object o = ((AsyncResult) result).getResponseFuture().get(3, TimeUnit.SECONDS);
+            Integer timeout = (Integer)invocation.getAttachment().getOrDefault(Consant.TIMEOUT_KEY, Consant.DEFAULT_TIMEOUT);
+            Object o = ((AsyncResult) result).getResponseFuture().get(timeout, TimeUnit.SECONDS);
             result.setValue(o);
         } catch (TimeoutException e) {
             result.setException(new RpcException(RpcException.TIMEOUT,invocation.getMethodName()+" timeout",e));

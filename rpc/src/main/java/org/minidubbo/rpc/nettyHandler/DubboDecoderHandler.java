@@ -60,7 +60,7 @@ public class DubboDecoderHandler extends ByteToMessageDecoder {
         if(header[4] == ProtocolHeader.REQUEST_OR_RESPONSE){
             //如果是请求
             if(header[2]==ProtocolHeader.REQUEST_FLAG){
-                Request request = new Request(requestId);
+                Request request = new Request(requestId,null);
                 obj =  request;
             }
             //否则是response

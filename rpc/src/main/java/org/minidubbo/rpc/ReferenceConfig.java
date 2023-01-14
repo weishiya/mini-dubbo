@@ -10,7 +10,7 @@ import org.minidubbo.rpc.proxy.ProxyFactory;
 import java.lang.reflect.InvocationHandler;
 import java.net.InetAddress;
 
-public class ReferenceConfig<T> {
+public class ReferenceConfig<T> extends AbstractMethodConfig{
 
     private T ref;
 
@@ -75,6 +75,9 @@ public class ReferenceConfig<T> {
         }
         if(version!=null){
             url.putParams(Consant.VERSION_KEY,group);
+        }
+        if(getTimeout() != null && getTimeout() > 0){
+            url.putParams(Consant.TIMEOUT_KEY,getTimeout());
         }
         this.url = url;
     }

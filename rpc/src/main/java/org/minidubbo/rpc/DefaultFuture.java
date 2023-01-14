@@ -20,4 +20,8 @@ public class DefaultFuture extends CompletableFuture {
         this.request = request;
         FUTURE_MAP.put(request.getId(),this);
     }
+
+    public static CompletableFuture getCompletableFuture(long requestId){
+        return FUTURE_MAP.remove(requestId);
+    }
 }

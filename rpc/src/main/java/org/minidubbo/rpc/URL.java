@@ -27,7 +27,7 @@ public class URL implements Serializable {
     //格式group/interfaceName:version
     private String serviceKey;
     //参数
-    private Map<String, String> params = new HashMap<>();
+    private Map<String, Object> params = new HashMap<>();
 
     public String getProtocol() {
         return protocol;
@@ -70,13 +70,12 @@ public class URL implements Serializable {
     }
 
     private String getGroup() {
-        return params.get(Consant.GROUP_KEY);
+        return (String) params.get(Consant.GROUP_KEY);
     }
 
     private String getVersion() {
-        return params.get(Consant.VERSION_KEY);
+        return (String)params.get(Consant.VERSION_KEY);
     }
-
 
     public static String buildServiceKey(String path, String group, String version) {
         int length = path == null ? 0 : path.length();
@@ -94,12 +93,16 @@ public class URL implements Serializable {
         return buf.toString().intern();
     }
 
-    public Map<String, String> getParams() {
+    public Map<String, Object> getParams() {
         return params;
     }
 
-    public void putParams(String key,String value) {
-        this.params = params;
+    public void putParams(String key,Object value) {
+        params.put(key,value);
+    }
+
+    public Object getParamByKey(String key){
+        return params.get(key);
     }
 
     public String getInterfaceName() {

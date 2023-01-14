@@ -1,5 +1,7 @@
 package org.minidubbo.rpc;
 
+import java.util.Map;
+
 /**
  * 网络调用入参
  */
@@ -40,4 +42,6 @@ public interface Invocation {
      * @serial
      */
     Object[] getArguments();
+
+    Map<String,Object> getAttachment();
 }
