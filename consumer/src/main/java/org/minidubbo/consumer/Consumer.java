@@ -15,6 +15,7 @@ public class Consumer {
     public static void main(String[] args) {
         ReferenceConfig<HelloService> referenceConfig = new ReferenceConfig<>();
         referenceConfig.setInterfaceClass(HelloService.class);
+        referenceConfig.setTimeout(1);
         HelloService helloService = referenceConfig.get();
         String result = helloService.hello();
         System.out.println(result);

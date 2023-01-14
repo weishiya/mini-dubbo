@@ -8,6 +8,7 @@ import org.minidubbo.rpc.*;
 import org.minidubbo.rpc.client.NettyClient;
 import org.minidubbo.rpc.exception.RpcException;
 import org.minidubbo.rpc.invoker.DubboInvoker;
+import org.minidubbo.rpc.nettyHandler.ClientHandler;
 import org.minidubbo.rpc.nettyHandler.RequestHandler;
 import org.minidubbo.rpc.server.NettyServer;
 
@@ -87,7 +88,7 @@ public class DubboProtocol implements Protocol {
         String clientKey = ip+":"+port+"/"+interfaceName;
         Client client = clientMap.computeIfAbsent(clientKey, k -> {
             //todo client暂时传入null,后续会开发新的handler
-            return new NettyClient(url, null);
+            return new NettyClient(url, new ClientHandler());
         });
         client.connect();
 

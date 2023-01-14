@@ -28,5 +28,9 @@ public class DefaultFuture extends CompletableFuture {
 
     }
 
+    public static CompletableFuture getCompletableFuture(long requestId){
+        return FUTURE_MAP.remove(requestId);
+    }
+
 
 }

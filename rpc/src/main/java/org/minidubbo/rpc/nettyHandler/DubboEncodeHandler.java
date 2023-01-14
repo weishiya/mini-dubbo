@@ -69,6 +69,5 @@ public class DubboEncodeHandler extends MessageToByteEncoder {
             out.writeBytes(header);
             out.writeBytes(body);
         }
-
     }
 }

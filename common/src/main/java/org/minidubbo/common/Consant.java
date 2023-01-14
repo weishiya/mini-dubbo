@@ -6,4 +6,6 @@ public interface Consant {
     String CONSUMER_PROTOCOL = "consumer";
     String GROUP_KEY = "group";
     String VERSION_KEY = "version";
+    String TIMEOUT_KEY = "timeout";
+    Integer DEFAULT_TIMEOUT = 1;
 }
