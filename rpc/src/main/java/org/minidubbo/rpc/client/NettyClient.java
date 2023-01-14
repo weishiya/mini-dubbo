@@ -51,8 +51,6 @@ public class NettyClient implements Client {
 
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        //todo 添加编解码器
-                        //ch.pipeline().addLast("XXX编解码器");
                         ch.pipeline().addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         ch.pipeline().addLast(new DubboDecoderHandler());
                         ch.pipeline().addLast(clientHandler);

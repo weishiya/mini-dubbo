@@ -26,7 +26,6 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.info("receive messsage ", JSON.toJSONString(msg));
         if(!(msg instanceof Request)){
             Response response = new Response(-1);
             response.setStatus(Response.BAD_REQUEST);
@@ -39,12 +38,15 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
             //这里就拿到了本地调用的结果,可以封装返回
             Result result = reply(ctx, invocation);
             response.setData(result);
+            ctx.writeAndFlush(response);
         }catch (RpcException rpcException){
             if(rpcException.getCode() == RpcException.INTERNAL){
                 response.setStatus(Response.INTERNAL_ERROR);
+                response.setErrorMessage(rpcException.getMessage());
             }
             else if(rpcException.getCode() == RpcException.SERVICE_NOT_FOUND){
                 response.setStatus(Response.SERVICE_NOT_FOUND);
+                response.setErrorMessage(rpcException.getMessage());
             }
         }catch (Exception e){
             response.setStatus(Response.APP_ERROR);

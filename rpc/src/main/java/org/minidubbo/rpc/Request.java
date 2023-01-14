@@ -7,7 +7,7 @@ public class Request implements Serializable {
 
     private final static AtomicLong ID_GENERATOR = new AtomicLong(0);
     private final long id;
-    private final Object data;
+    private Object data;
     public Request(long id,Object data){
         this.id = id;
         this.data = data;
@@ -23,5 +23,9 @@ public class Request implements Serializable {
 
     public Object getData(){
         return data;
+    }
+
+    public void setData(Object data){
+        this.data = data;
     }
 }

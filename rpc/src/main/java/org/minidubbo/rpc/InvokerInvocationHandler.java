@@ -18,7 +18,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
     }
 
     private Invocation createInvocation(String serviceKey,String className,String method,Class<?>[] parameterTypes,Object[] args){
-        Invocation invocation = new RpcInvocation(serviceKey,className,method,parameterTypes,args);
+        Invocation invocation = new RpcInvocation(serviceKey,method,className,parameterTypes,args);
         return invocation;
     }
 }

@@ -18,11 +18,11 @@ package org.minidubbo.rpc.codec;
  * 6-9字节 状态码
  * 10-17字节 请求编号
  * 18-21字节 数据体长度
- * 多用 5个字节，却更直观一些
+ * 多用 6个字节，却更直观一些
  */
 public interface ProtocolHeader {
     //请求头长度
-    byte HEADER_LENGTH = 19;
+    byte HEADER_LENGTH = 22;
     //魔法值
     short MAGIC = (short) 0xdabb;
 

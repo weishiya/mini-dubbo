@@ -16,8 +16,8 @@ public class RpcInvocation implements Invocation, Serializable {
 
     private Object[] arguments;
 
-    public RpcInvocation(String serviceKey,String methodName,String serviceName,Class<?>[] parameterTypes,Object[] arguments){
-        this.serviceKey = serviceKey;
+    public RpcInvocation(String protocolServiceKey,String methodName,String serviceName,Class<?>[] parameterTypes,Object[] arguments){
+        this.serviceKey = protocolServiceKey;
         this.methodName = methodName;
         this.parameterTypes = parameterTypes;
         this.arguments = arguments;
@@ -47,4 +47,6 @@ public class RpcInvocation implements Invocation, Serializable {
     public Object[] getArguments() {
         return arguments;
     }
+
+
 }
