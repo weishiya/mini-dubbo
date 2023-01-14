@@ -8,12 +8,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.URL;
 import org.minidubbo.rpc.codec.FastjsonSerialization;
 import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
 import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
+import org.minidubbo.rpc.nettyHandler.LoggingHandler;
 
 
 @Slf4j
@@ -47,10 +49,10 @@ public class NettyServer {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
-                        //todo 添加编解码器
-                        //ch.pipeline().addLast("XXX编解码器");
                         pipeline.addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         pipeline.addLast(new DubboDecoderHandler());
+                        pipeline.addLast(new LoggingHandler());
+
                         pipeline.addLast(requestHandler);
                     }
                 });

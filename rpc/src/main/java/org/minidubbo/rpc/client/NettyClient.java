@@ -6,6 +6,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.Client;
 import org.minidubbo.rpc.DefaultFuture;
@@ -15,6 +16,7 @@ import org.minidubbo.rpc.codec.FastjsonSerialization;
 import org.minidubbo.rpc.exception.RpcException;
 import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
 import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
+import org.minidubbo.rpc.nettyHandler.LoggingHandler;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -53,6 +55,8 @@ public class NettyClient implements Client {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         ch.pipeline().addLast(new DubboDecoderHandler());
+                        ch.pipeline().addLast(new LoggingHandler());
+
                         ch.pipeline().addLast(clientHandler);
                     }
                 });
@@ -83,7 +87,6 @@ public class NettyClient implements Client {
                 this.isConnected = true;
                 Channel channel = connectFuture.channel();
                 NettyClient.this.channel = channel;
-                log.info("connect success ip:{} port:{}",url.getIp(),url.getPort());
             }
         }
 

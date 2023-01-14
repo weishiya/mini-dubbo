@@ -44,7 +44,6 @@ public class DubboEncodeHandler extends MessageToByteEncoder {
             Bytes.int2bytes(body.length,header,18);
             out.writeBytes(header);
             out.writeBytes(body);
-            log.info("write request {} {}",ctx.channel().remoteAddress(), JSON.toJSONString(req));
         }
         else if(msg instanceof Response){
             Response response = (Response) msg;
@@ -69,7 +68,6 @@ public class DubboEncodeHandler extends MessageToByteEncoder {
             Bytes.int2bytes(body.length,header,18);
             out.writeBytes(header);
             out.writeBytes(body);
-            log.info("write response {} {}",ctx.channel().remoteAddress(),JSON.toJSONString(response));
         }
 
     }

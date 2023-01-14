@@ -45,7 +45,7 @@ public class DubboDecoderHandler extends ByteToMessageDecoder {
         //解析消息体
         decodeBody(obj,header,body);
         out.add(obj);
-        log.info("receive message {}",JSON.toJSONString(obj));
+        //log.info("receive message {}",JSON.toJSONString(obj));
     }
 
     /**

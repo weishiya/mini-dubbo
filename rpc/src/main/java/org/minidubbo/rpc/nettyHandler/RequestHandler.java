@@ -20,7 +20,6 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketAddress socketAddress = ctx.channel().remoteAddress();
-        log.info("client connected ,it's address is: {}",socketAddress);
         ctx.fireChannelActive();
     }
 

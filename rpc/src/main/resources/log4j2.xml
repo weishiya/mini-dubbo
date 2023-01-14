@@ -8,7 +8,7 @@
         <Property name="LOG_HOME">logs</Property>
         <property name="FILE_NAME">minidubbo</property>
         <property name="traceLayout">%m%n</property>
-        <property name="patternLayout">[%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}] [%level{length=5}] [%thread-%tid]  [%X{hostName}] [%X{ip}] [%X{applicationName}] [%X{traceId}] [%X{spanId}] [%F,%L,%C,%M] [%m] ## '%ex'%n</property>
+        <property name="patternLayout">[%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}] [%level{length=5}] [%thread-%tid]  [%F,%L,%C,%M] [%m] %n</property>
     	<!--
     	<property name="jsonLayout">{"time":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level{length=5}","thread-tid":"%thread-%tid","class":"%logger","hostName":"%org.apache.dubbo.rpc.cluster.LoadBalance{hostName}","ip":"%org.apache.dubbo.rpc.cluster.LoadBalance{ip}","applicationName":"%org.apache.dubbo.rpc.cluster.LoadBalance{applicationName}","traceId":"%org.apache.dubbo.rpc.cluster.LoadBalance{traceId}","spanId":"%org.apache.dubbo.rpc.cluster.LoadBalance{spanId}","location":"%F,%L,%C,%M","messageInfo":"%m","throwable":"%ex"}%n</property>
     	 --> 
