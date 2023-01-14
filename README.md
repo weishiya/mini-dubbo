@@ -18,4 +18,6 @@
 
 6.分支protocol-refer模块，DubboProtocol实现了refer方法，启动客户端链接server，运行provider的main方法，然后运行Consumer的main，可以看到provider控制台输出了日志 client connected，AbstractInvoker的注释留意一下，可以考虑服务端的返回数据包的时候怎么唤醒线程。因为现在还没定义编解码器，还不能发送数据包。接下来就是第二大章节，封装协议。
 
-7.分支minidubbo-protocol封装了协议
+7.分支minidubbo-protocol封装了协议,DubboEncodeHandler 和 DubboDecoderHandler，运行provider和consumer，可以看到consumer端接收到了provider端发回的响应。序列号协议这里先用最简单FastJson。protocol-refer遗留了一个问题，如何唤醒线程，现在响应数据收到了，答案将在下一章揭晓。
+
+8.分支write-response，这里ClientHandler唤醒了原本发送请求阻塞的线程。同时，这一章节也实现了自定义超时事件的功能。
