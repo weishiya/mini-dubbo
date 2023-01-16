@@ -1,6 +1,6 @@
 package org.minidubbo.rpc;
 
-public abstract class AbstractMethodConfig {
+public abstract class AbstractMethodConfig extends AbstractServiceConfig{
     //超时时间
     private Integer timeout;
 

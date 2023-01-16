@@ -79,6 +79,8 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
         if(getTimeout() != null && getTimeout() > 0){
             url.putParams(Consant.TIMEOUT_KEY,getTimeout());
         }
+        url.putParams(Consant.CONNECTIONS_KEY,this.getConnections());
+        url.putParams(Consant.SHARE_CONNECTIONS_KEY,this.isShareconnections());
         this.url = url;
     }
 

@@ -8,4 +8,6 @@ public interface Consant {
     String VERSION_KEY = "version";
     String TIMEOUT_KEY = "timeout";
     Integer DEFAULT_TIMEOUT = 1;
+    String SHARE_CONNECTIONS_KEY = "shareconnections";
+    String CONNECTIONS_KEY = "connections";
 }

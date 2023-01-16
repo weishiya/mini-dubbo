@@ -12,6 +12,8 @@ import org.minidubbo.rpc.nettyHandler.ClientHandler;
 import org.minidubbo.rpc.nettyHandler.RequestHandler;
 import org.minidubbo.rpc.server.NettyServer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +23,9 @@ public class DubboProtocol implements Protocol {
     //key为serviekey，等consumer发起网络调用的的时候根据servicekey找对对应exporter，进而找到invoker
     private  final Map<String/*serviceKey*/, Exporter<?>> exporterMap = new ConcurrentHashMap<>();
     //key的格式为IP:PORT/interface,如127.0.0.1:20883/com.minidubbo.api.HelloService
-    private final Map<String/*IP+port+Service*/,Client> clientMap = new ConcurrentHashMap<>();
+    private final Map<String/*IP+port+Service*/,List<Client>> clientMap = new ConcurrentHashMap<>();
+
+    private Map<String, List<Client>> sharedClient = new ConcurrentHashMap<>();
 
     ChannelHandler handleRequestHandler = new RequestHandler() {
         @Override
@@ -48,9 +52,9 @@ public class DubboProtocol implements Protocol {
         //todo 这里先固定写port，后续引入注册中心在通过服务发现的功能确定provider的IP和port
         url.setPort(Consant.PORT);
         //创建链接server的客户端
-        Client client = getClient(url);
+        Client[] clients = getClient(url);
         //创建invoker
-        DubboInvoker dubboInvoker = new DubboInvoker(type,url,client);
+        DubboInvoker dubboInvoker = new DubboInvoker(type,url,clients);
         return dubboInvoker;
     }
 
@@ -81,16 +85,43 @@ public class DubboProtocol implements Protocol {
         nettyServer.open();
     }
 
-    private Client getClient(URL url) {
+    private Client[] getClient(URL url) {
+        Boolean share = (Boolean)url.getParams().get(Consant.SHARE_CONNECTIONS_KEY);
+        Integer connectionNum = (Integer)url.getParams().get(Consant.CONNECTIONS_KEY);
+        if(share){
+            return useShardClient(url,connectionNum);
+        }
+
         String ip = url.getIp();
         int port = url.getPort();
         String interfaceName = url.getInterfaceName();
         String clientKey = ip+":"+port+"/"+interfaceName;
-        Client client = clientMap.computeIfAbsent(clientKey, k -> {
-            return new NettyClient(url, new ClientHandler());
+        List<Client> clients = clientMap.computeIfAbsent(clientKey, k -> {
+            List<Client> clientList = new ArrayList<>();
+            for (int i = 0; i < connectionNum; i++) {
+                clientList.add(new NettyClient(url, new ClientHandler()));
+            }
+            clientList.forEach(t->t.connect());
+            return clientList;
         });
-        client.connect();
 
-        return client;
+        Client[] res = new Client[connectionNum];
+        return clients.toArray(res);
+    }
+
+    private Client[] useShardClient(URL url,int num){
+        String ip = url.getIp();
+        int port = url.getPort();
+        String clientKey = ip+":"+port;
+        List<Client> clients = sharedClient.computeIfAbsent(clientKey, k -> {
+            List<Client> clientList = new ArrayList<>();
+            for (int i = 0; i < num; i++) {
+                clientList.add(new NettyClient(url, new ClientHandler()));
+            }
+            clientList.forEach(t->t.connect());
+            return clientList;
+        });
+        Client[] res = new Client[num];
+        return clients.toArray(res);
     }
 }
