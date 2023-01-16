@@ -32,8 +32,7 @@ public abstract class AbstractInvoker<T> implements Invoker {
         Integer timeout = (Integer)invocation.getAttachment().getOrDefault(Consant.TIMEOUT_KEY, Consant.DEFAULT_TIMEOUT);
         Result result = doInvoke(invocation);
         try {
-            //这里做成阻塞的,等待线程唤醒，可以考虑一下会在那里唤醒线程？
-            //todo 后续会用时间轮算法处理超时
+            //这里阻塞，等待响应回来时，唤醒线程
             Object o = ((AsyncResult) result).getResponseFuture().get(timeout, TimeUnit.SECONDS);
             result.setValue(o);
         } catch (TimeoutException e) {

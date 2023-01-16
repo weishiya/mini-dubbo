@@ -87,7 +87,6 @@ public class DubboProtocol implements Protocol {
         String interfaceName = url.getInterfaceName();
         String clientKey = ip+":"+port+"/"+interfaceName;
         Client client = clientMap.computeIfAbsent(clientKey, k -> {
-            //todo client暂时传入null,后续会开发新的handler
             return new NettyClient(url, new ClientHandler());
         });
         client.connect();
