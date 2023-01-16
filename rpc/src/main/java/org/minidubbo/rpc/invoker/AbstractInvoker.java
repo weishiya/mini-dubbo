@@ -29,11 +29,11 @@ public abstract class AbstractInvoker<T> implements Invoker {
 
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
+        Integer timeout = (Integer)invocation.getAttachment().getOrDefault(Consant.TIMEOUT_KEY, Consant.DEFAULT_TIMEOUT);
         Result result = doInvoke(invocation);
         try {
             //这里做成阻塞的,等待线程唤醒，可以考虑一下会在那里唤醒线程？
             //todo 后续会用时间轮算法处理超时
-            Integer timeout = (Integer)invocation.getAttachment().getOrDefault(Consant.TIMEOUT_KEY, Consant.DEFAULT_TIMEOUT);
             Object o = ((AsyncResult) result).getResponseFuture().get(timeout, TimeUnit.SECONDS);
             result.setValue(o);
         } catch (TimeoutException e) {

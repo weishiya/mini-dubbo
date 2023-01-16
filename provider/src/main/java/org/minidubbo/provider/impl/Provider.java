@@ -12,6 +12,5 @@ public class Provider {
         serviceConfig.setRef(helloService);
         serviceConfig.setInterfaceClass(HelloService.class);
         serviceConfig.export();
-        new CountDownLatch(1).await();
     }
 }

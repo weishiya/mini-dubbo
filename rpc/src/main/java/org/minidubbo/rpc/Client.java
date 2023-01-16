@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 
 public interface Client {
 
-    CompletableFuture request(Object data);
+    CompletableFuture request(Object data,int timeout);
 
     void connect();
 

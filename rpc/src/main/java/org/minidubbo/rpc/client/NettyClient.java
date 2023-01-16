@@ -63,13 +63,13 @@ public class NettyClient implements Client {
     }
 
     @Override
-    public CompletableFuture request(Object data) {
+    public CompletableFuture request(Object data,int timeout) {
         if(!isConnect()){
             throw new RpcException(RpcException.CHANNEL_NOT_CONNECTED,"channel not connect host "+url.getIp());
         }
         Request request = new Request(data);
         channel.writeAndFlush(request);
-        return new DefaultFuture(channel,request);
+        return new DefaultFuture(channel,request,timeout);
     }
 
     @Override

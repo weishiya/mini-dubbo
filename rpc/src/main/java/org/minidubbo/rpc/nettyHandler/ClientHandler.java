@@ -19,12 +19,13 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 if(response.getStatus()!=Response.OK){
                     throw new Exception(response.getErrorMessage());
                 }
-                CompletableFuture completableFuture = DefaultFuture.getCompletableFuture(response.getId());
+                DefaultFuture completableFuture = (DefaultFuture)DefaultFuture.getCompletableFuture(response.getId());
                 if(completableFuture == null || completableFuture.isCancelled()){
                     return;
                 }
                 Object value = ((Result) response.getData()).getValue();
                 completableFuture.complete(value);
+                completableFuture.cancelTimecheck();
             }
 
     }

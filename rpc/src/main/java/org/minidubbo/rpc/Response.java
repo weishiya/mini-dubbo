@@ -14,6 +14,8 @@ public class Response implements Serializable {
 
     public static final int BAD_REQUEST = 60;
 
+    public static final int TIME_OUT = 70;
+
     private final long id;
     private Object data;
     private int status = Response.OK;
