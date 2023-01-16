@@ -89,7 +89,7 @@ public class DubboProtocol implements Protocol {
         Boolean share = (Boolean)url.getParams().get(Consant.SHARE_CONNECTIONS_KEY);
         Integer connectionNum = (Integer)url.getParams().get(Consant.CONNECTIONS_KEY);
         if(share){
-            return useShardClient(url,connectionNum);
+            return useSharedClient(url,connectionNum);
         }
 
         String ip = url.getIp();
@@ -109,7 +109,7 @@ public class DubboProtocol implements Protocol {
         return clients.toArray(res);
     }
 
-    private Client[] useShardClient(URL url,int num){
+    private Client[] useSharedClient(URL url,int num){
         String ip = url.getIp();
         int port = url.getPort();
         String clientKey = ip+":"+port;
