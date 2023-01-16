@@ -23,3 +23,5 @@
 8.分支write-response，这里ClientHandler唤醒了原本发送请求阻塞的线程。同时，这一章节也实现了自定义超时事件的功能。
 
 9.分支timeot,用时间轮算法来进行超时计算，时间到了就抛出超时异常，见TimeoutCheckTask。运行单元测试TimeoutTest的testTimeout和testTimeout2，可以发现当超时时间是6秒是不超时的。
+
+10.分支decode-bugfix，原来的解码器DubboDecoderHandler对数据包的解析有bug，做了修复。运行ProtocolProviderTest和ProtocolTest可以看到10个线程发送了10次请求，没有收到了100次响应。
