@@ -33,19 +33,20 @@ public class DubboDecoderHandler extends ByteToMessageDecoder {
         in.readBytes(header,0,ProtocolHeader.HEADER_LENGTH);
         //解析消息头
         Object obj = decodeHeader(header);
-
         int bodyLength = Bytes.bytes2int(header, 18);
-        byte[] body = new byte[bodyLength];
+
         //如果不够，那么说明有拆包
-        if(capacity - in.readerIndex() < bodyLength){
+        //capacity - in.readerIndex() < bodyLength
+        capacity = in.readableBytes();
+        if(capacity < bodyLength){
             in.readerIndex(markReaderIndex);
             return;
         }
+        byte[] body = new byte[bodyLength];
         in.readBytes(body);
         //解析消息体
         decodeBody(obj,header,body);
         out.add(obj);
-        //log.info("receive message {}",JSON.toJSONString(obj));
     }
 
     /**
