@@ -30,11 +30,6 @@ public class ProtocolTest {
         public void run() {
             for (int i = 0; i < 10; i++) {
                 String result = helloService.hello();
-//                try {
-//                    Thread.sleep(20);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
                 log.info("线程{} 第 {} 次调用hello方法，收到数据:{}",Thread.currentThread().getName(),i,result);
             }
         }
