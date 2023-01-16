@@ -21,3 +21,5 @@
 7.分支minidubbo-protocol封装了协议,DubboEncodeHandler 和 DubboDecoderHandler，运行provider和consumer，可以看到consumer端接收到了provider端发回的响应。序列号协议这里先用最简单FastJson。protocol-refer遗留了一个问题，如何唤醒线程，现在响应数据收到了，答案将在下一章揭晓。
 
 8.分支write-response，这里ClientHandler唤醒了原本发送请求阻塞的线程。同时，这一章节也实现了自定义超时事件的功能。
+
+9.分支timeot,用时间轮算法来进行超时计算，时间到了就抛出超时异常，见TimeoutCheckTask。运行单元测试TimeoutTest的testTimeout和testTimeout2，可以发现当超时时间是6秒是不超时的。
