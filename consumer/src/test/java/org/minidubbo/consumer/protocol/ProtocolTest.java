@@ -12,8 +12,8 @@ public class ProtocolTest {
     public void test() throws InterruptedException {
         ReferenceConfig<HelloService> referenceConfig = new ReferenceConfig<>();
         referenceConfig.setInterfaceClass(HelloService.class);
-        referenceConfig.setShareconnections(false);
-        referenceConfig.setConnections(2);
+        referenceConfig.setShareconnections(true);
+        referenceConfig.setConnections(1);
         referenceConfig.setTimeout(3);
         HelloService helloService = referenceConfig.get();
 

@@ -1,21 +1,24 @@
 package org.minidubbo.rpc.protocol;
 
 import io.netty.channel.*;
-import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.common.Consant;
 import org.minidubbo.rpc.*;
 import org.minidubbo.rpc.client.NettyClient;
+import org.minidubbo.rpc.event.EventHandler;
+import org.minidubbo.rpc.event.RequestEventHandler;
 import org.minidubbo.rpc.exception.RpcException;
+import org.minidubbo.rpc.executor.DefaultExecutorRepository;
 import org.minidubbo.rpc.invoker.DubboInvoker;
 import org.minidubbo.rpc.nettyHandler.ClientHandler;
-import org.minidubbo.rpc.nettyHandler.RequestHandler;
+import org.minidubbo.rpc.nettyHandler.MessageOnlyServerHandler;
 import org.minidubbo.rpc.server.NettyServer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 @Slf4j
 public class DubboProtocol implements Protocol {
@@ -27,9 +30,9 @@ public class DubboProtocol implements Protocol {
 
     private Map<String, List<Client>> sharedClient = new ConcurrentHashMap<>();
 
-    ChannelHandler handleRequestHandler = new RequestHandler() {
+    EventHandler requestEventHandler = new RequestEventHandler() {
         @Override
-        public Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException {
+        protected Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException {
             if(msg instanceof Invocation){
                 Invocation inv = (Invocation) msg;
                 //获取serviceKey找到对应的invoker直接调用
@@ -66,8 +69,9 @@ public class DubboProtocol implements Protocol {
 
         DubboExporter dubboExporter = new DubboExporter(serviceKey,invoker);
 
+        ExecutorService defaultExecutorService = DefaultExecutorRepository.INSTANCE.getDefaultExecutorService();
         try {
-            openServer(url);
+            openServer(url,defaultExecutorService);
         } catch (Throwable throwable) {
            log.info("oepn server error",throwable);
             return dubboExporter;
@@ -80,8 +84,9 @@ public class DubboProtocol implements Protocol {
         return dubboExporter;
     }
 
-    private void openServer(URL url) throws Throwable {
-        NettyServer nettyServer = new NettyServer(url,handleRequestHandler);
+    private void openServer(URL url,ExecutorService executorService) throws Throwable {
+        MessageOnlyServerHandler serverHandler = new MessageOnlyServerHandler(executorService,requestEventHandler);
+        NettyServer nettyServer = new NettyServer(url,serverHandler);
         nettyServer.open();
     }
 

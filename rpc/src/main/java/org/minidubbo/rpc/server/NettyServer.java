@@ -52,7 +52,6 @@ public class NettyServer {
                         pipeline.addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         pipeline.addLast(new DubboDecoderHandler());
                         pipeline.addLast(new LoggingHandler());
-
                         pipeline.addLast(requestHandler);
                     }
                 });

@@ -1,36 +1,25 @@
-package org.minidubbo.rpc.nettyHandler;
+package org.minidubbo.rpc.event;
 
-import com.alibaba.fastjson.JSON;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.Invocation;
 import org.minidubbo.rpc.Request;
 import org.minidubbo.rpc.Response;
 import org.minidubbo.rpc.Result;
 import org.minidubbo.rpc.exception.RpcException;
 
-import java.net.SocketAddress;
+public abstract class RequestEventHandler extends AbstractEventHandler{
 
-@Slf4j
-@ChannelHandler.Sharable
-public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        SocketAddress socketAddress = ctx.channel().remoteAddress();
-        ctx.fireChannelActive();
+    public RequestEventHandler() {
+        super(ChannelState.READ);
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if(!(msg instanceof Request)){
+    public void doHandle(ChannelHandlerContext ctx, Object message) {
+        if(!(message instanceof Request)){
             Response response = new Response(-1);
             response.setStatus(Response.BAD_REQUEST);
         }
-        Request request = ((Request) msg);
+        Request request = ((Request) message);
         Object data = request.getData();
         Invocation invocation = (Invocation) data;
         Response response = new Response(request.getId());
@@ -38,7 +27,6 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
             //这里就拿到了本地调用的结果,可以封装返回
             Result result = reply(ctx, invocation);
             response.setData(result);
-            ctx.writeAndFlush(response);
         }catch (RpcException rpcException){
             if(rpcException.getCode() == RpcException.INTERNAL){
                 response.setStatus(Response.INTERNAL_ERROR);
@@ -52,14 +40,8 @@ public abstract class RequestHandler extends ChannelInboundHandlerAdapter {
             response.setStatus(Response.APP_ERROR);
             response.setErrorMessage(e.getMessage());
         }
+        ctx.writeAndFlush(response);
     }
 
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        SocketAddress socketAddress = ctx.channel().remoteAddress();
-        log.info("client disconnected ,it's address is: {}",socketAddress);
-        ctx.fireChannelActive();
-    }
-
-    public abstract Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException;
+    protected abstract Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException;
 }
