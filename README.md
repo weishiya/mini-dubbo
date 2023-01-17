@@ -26,4 +26,6 @@
 
 10.分支decode-bugfix，原来的解码器DubboDecoderHandler对数据包的解析有bug，做了修复。运行ProtocolProviderTest和ProtocolTest可以看到10个线程发送了10次请求，收到了100次响应。
 
-11.分支muti-client-and-share-client,对服务的某个外部引用是否用共享的客户端，以及创建的时候用几个网络连接。默认是一个consumer对一个provider的所有网络请求共用一个连接，但某些场景下，一个服务可能要传输较大的数据包，这可能会阻塞其他服务的调用，可以单独为这个服务单独建立连接。
+11.分支muti-client-and-share-client,创建了类似于连接池，对服务的某个外部引用是否用共享的客户端，以及创建的时候用几个网络连接。默认是一个consumer对一个provider的所有网络请求共用一个连接，但某些场景下，一个服务可能要传输较大的数据包，这可能会阻塞其他服务的调用，可以单独为这个服务单独建立连接。
+
+12.分支provider-async,基于主从reactor线程模型，provider端采用对consumer的请求进行异步化处理，只有连接事件和编解码由Netty的worker线程池处理，具体的请求的执行由线程池处理，见MessageOnlyServerHandler
