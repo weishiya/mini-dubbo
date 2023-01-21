@@ -2,7 +2,6 @@ package org.minidubbo.rpc.nettyHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.minidubbo.common.flusher.ParallelFlusher;
 import org.minidubbo.rpc.Request;
 import org.minidubbo.rpc.event.ChannelState;
 import org.minidubbo.rpc.event.EventHandler;
