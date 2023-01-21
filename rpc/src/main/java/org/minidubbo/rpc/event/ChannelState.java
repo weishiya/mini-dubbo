@@ -12,9 +12,14 @@ public enum ChannelState {
     DISCONNECTED,
 
     /**
-     * READ
+     * REQUEST
      */
-    READ,
+    REQUEST,
+
+    /**
+     * RESPONSE
+     */
+    RESPONSE,
 
     /**
      * heartbeat

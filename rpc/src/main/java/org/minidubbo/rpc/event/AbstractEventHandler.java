@@ -2,7 +2,7 @@ package org.minidubbo.rpc.event;
 
 import io.netty.channel.ChannelHandlerContext;
 
-public abstract class AbstractEventHandler implements EventHandler{
+public abstract class AbstractEventHandler<T> implements EventHandler{
 
     private ChannelState state;
 
@@ -10,17 +10,14 @@ public abstract class AbstractEventHandler implements EventHandler{
         this.state = state;
     }
 
-    public ChannelState getState() {
+    @Override
+    public ChannelState getChannelState() {
         return state;
     }
 
     @Override
-    public void handle(ChannelHandlerContext ctx, Object message,ChannelState state){
-        if(this.state == state){
-            doHandle(ctx,message);
-        }else {
-            throw new RuntimeException("can not handle this kind of event");
-        }
+    public void handle(ChannelHandlerContext ctx, Object message){
+        doHandle(ctx,message);
     }
 
     protected abstract void doHandle(ChannelHandlerContext ctx, Object message);

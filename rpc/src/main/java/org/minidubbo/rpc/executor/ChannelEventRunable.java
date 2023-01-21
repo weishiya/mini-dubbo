@@ -24,6 +24,6 @@ public class ChannelEventRunable implements Runnable{
 
     @Override
     public void run() {
-        eventHandler.handle(ctx,message,state);
+        eventHandler.handle(ctx,message);
     }
 }

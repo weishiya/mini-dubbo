@@ -10,7 +10,7 @@ import org.minidubbo.rpc.exception.RpcException;
 public abstract class RequestEventHandler extends AbstractEventHandler{
 
     public RequestEventHandler() {
-        super(ChannelState.READ);
+        super(ChannelState.REQUEST);
     }
 
     @Override
