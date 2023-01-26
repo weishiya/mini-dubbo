@@ -3,9 +3,8 @@ package org.minidubbo.rpc.nettyHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.minidubbo.rpc.Request;
-import org.minidubbo.rpc.event.ChannelState;
-import org.minidubbo.rpc.event.EventHandler;
-import org.minidubbo.rpc.executor.ChannelEventRunable;
+import org.minidubbo.rpc.async.DubboEvent;
+import org.minidubbo.rpc.async.flusher.Flusher;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,18 +15,16 @@ public class MessageOnlyServerHandler extends ChannelInboundHandlerAdapter {
 
     private ExecutorService executor;
 
-    private EventHandler requestEventHandler;
+    private Flusher<DubboEvent> flusher;
 
-
-    public MessageOnlyServerHandler(ExecutorService executor,EventHandler requestEventHandler){
-        this.executor = executor;
-        this.requestEventHandler = requestEventHandler;
+    public MessageOnlyServerHandler(Flusher<DubboEvent> flusher){
+        this.flusher = flusher;
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
         if(msg instanceof Request){
-            executor.execute(new ChannelEventRunable(ctx,requestEventHandler, ChannelState.REQUEST,msg));
+            flusher.add(msg,ctx);
         }
     }
 }

@@ -1,5 +1,6 @@
-package org.minidubbo.rpc.event;
+package org.minidubbo.rpc.async;
 
+import com.lmax.disruptor.EventHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.minidubbo.rpc.Invocation;
 import org.minidubbo.rpc.Request;
@@ -7,19 +8,20 @@ import org.minidubbo.rpc.Response;
 import org.minidubbo.rpc.Result;
 import org.minidubbo.rpc.exception.RpcException;
 
-public abstract class RequestEventHandler extends AbstractEventHandler{
+public abstract class RequestEventHandler extends DubboEventHandler {
 
     public RequestEventHandler() {
-        super(ChannelState.REQUEST);
+        super(Request.class);
     }
 
+
     @Override
-    public void doHandle(ChannelHandlerContext ctx, Object message) {
-        if(!(message instanceof Request)){
+    protected void handleMsg(ChannelHandlerContext ctx, Object msg) {
+        if(!(msg instanceof Request)){
             Response response = new Response(-1);
             response.setStatus(Response.BAD_REQUEST);
         }
-        Request request = ((Request) message);
+        Request request = ((Request) msg);
         Object data = request.getData();
         Invocation invocation = (Invocation) data;
         Response response = new Response(request.getId());
@@ -43,5 +45,5 @@ public abstract class RequestEventHandler extends AbstractEventHandler{
         ctx.writeAndFlush(response);
     }
 
-    protected abstract Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException;
+    protected abstract Result reply(ChannelHandlerContext ctx, Invocation invocation);
 }

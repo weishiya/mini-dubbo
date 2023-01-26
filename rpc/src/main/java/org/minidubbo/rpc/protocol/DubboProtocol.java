@@ -1,12 +1,17 @@
 package org.minidubbo.rpc.protocol;
 
+import com.lmax.disruptor.EventFactory;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.common.Consant;
 import org.minidubbo.rpc.*;
+import org.minidubbo.rpc.async.DubboEvent;
+import org.minidubbo.rpc.async.DubboEventFactory;
+import org.minidubbo.rpc.async.DubboEventTranslator;
+import org.minidubbo.rpc.async.RequestEventHandler;
+import org.minidubbo.rpc.async.flusher.Flusher;
+import org.minidubbo.rpc.async.flusher.ParallelFlusher;
 import org.minidubbo.rpc.client.NettyClient;
-import org.minidubbo.rpc.event.EventHandler;
-import org.minidubbo.rpc.event.RequestEventHandler;
 import org.minidubbo.rpc.exception.RpcException;
 import org.minidubbo.rpc.executor.DefaultExecutorRepository;
 import org.minidubbo.rpc.invoker.DubboInvoker;
@@ -30,9 +35,11 @@ public class DubboProtocol implements Protocol {
 
     private Map<String, List<Client>> sharedClient = new ConcurrentHashMap<>();
 
-    EventHandler requestEventHandler = new RequestEventHandler() {
+    private Flusher<DubboEvent> flusher;
+
+    org.minidubbo.rpc.async.RequestEventHandler  requestEventHandler = new RequestEventHandler () {
         @Override
-        protected Result reply(ChannelHandlerContext ctx, Object msg) throws RpcException {
+        protected Result reply(ChannelHandlerContext ctx, Invocation msg) throws RpcException {
             if(msg instanceof Invocation){
                 Invocation inv = (Invocation) msg;
                 //获取serviceKey找到对应的invoker直接调用
@@ -85,9 +92,19 @@ public class DubboProtocol implements Protocol {
     }
 
     private void openServer(URL url,ExecutorService executorService) throws Throwable {
-        MessageOnlyServerHandler serverHandler = new MessageOnlyServerHandler(executorService,requestEventHandler);
+        createFlusher(executorService);
+        MessageOnlyServerHandler serverHandler = new MessageOnlyServerHandler(flusher);
         NettyServer nettyServer = new NettyServer(url,serverHandler);
         nettyServer.open();
+    }
+
+    private void createFlusher(ExecutorService executorService){
+        EventFactory dubboEventFactory = new DubboEventFactory();
+        DubboEventTranslator translator = new DubboEventTranslator();
+        this.flusher =
+                new ParallelFlusher<DubboEvent>(dubboEventFactory,1024*1024,executorService,translator);
+        flusher.handleWith(requestEventHandler);
+        flusher.start();
     }
 
     private Client[] getClient(URL url) {
