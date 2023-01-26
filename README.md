@@ -1,5 +1,5 @@
 # mini-dubbo
-从0到1写一个简易版得dubbo框架，旨在讲解dubbo原理
+从0到1写一个简易版的dubbo框架
 
 分为5个大部分，用不同的分支一步步演化成一个完整的rpc框架，第一部分是简单的rpc模型演示，第二部分是dubbo协议的封装，包括网络协议封装进行编解码和hessian协议进行序列化，需要读者对netty的使用有一定了解，第三部分是引入注册中心进行provider服务暴露和consumer服务发现，第四部分是集群容错和负载均衡，第五部分是引入SPI机制，支持用户自定义扩展
 
@@ -28,4 +28,4 @@
 
 11.分支muti-client-and-share-client,创建了类似于连接池，对服务的某个外部引用是否用共享的客户端，以及创建的时候用几个网络连接。默认是一个consumer对一个provider的所有网络请求共用一个连接，但某些场景下，一个服务可能要传输较大的数据包，这可能会阻塞其他服务的调用，可以单独为这个服务单独建立连接。
 
-12.分支provider-async,基于主从reactor线程模型，provider端采用对consumer的请求进行异步化处理，只有连接事件和编解码由Netty的worker线程池处理，具体的请求的执行由线程池处理，见MessageOnlyServerHandler
+12.分支provider-async,基于主从reactor线程模型，provider端采用对consumer的请求进行异步化处理，只有连接事件和编解码由Netty的worker线程池处理，具体的请求的执行发送到disruptor队列里，由线程池处理，见MessageOnlyServerHandler
