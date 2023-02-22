@@ -6,10 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.common.Bytes;
-import org.minidubbo.rpc.Invocation;
-import org.minidubbo.rpc.Request;
-import org.minidubbo.rpc.Response;
-import org.minidubbo.rpc.Result;
+import org.minidubbo.rpc.*;
 import org.minidubbo.rpc.codec.FastjsonSerialization;
 import org.minidubbo.rpc.codec.ProtocolHeader;
 import org.minidubbo.rpc.exception.RpcException;
@@ -33,6 +30,12 @@ public class DubboDecoderHandler extends ByteToMessageDecoder {
         in.readBytes(header,0,ProtocolHeader.HEADER_LENGTH);
         //解析消息头
         Object obj = decodeHeader(header);
+        //如果是心跳，那么没有消息体
+        if((obj instanceof HeartBeat) && ((HeartBeat) obj).isHeartbeat()){
+            out.add(obj);
+            return;
+        }
+
         int bodyLength = Bytes.bytes2int(header, 18);
 
         //如果不够，那么说明有拆包
@@ -57,22 +60,22 @@ public class DubboDecoderHandler extends ByteToMessageDecoder {
     Object decodeHeader(byte[] header){
         Object obj = null;
         long requestId = Bytes.bytes2long(header, 10);
-        //如果是正常请求或者响应
-        if(header[4] == ProtocolHeader.REQUEST_OR_RESPONSE){
-            //如果是请求
-            if(header[2]==ProtocolHeader.REQUEST_FLAG){
-                Request request = new Request(requestId,null);
-                obj =  request;
-            }
-            //否则是response
-            else {
-                Response response = new Response(requestId);
-                obj = response;
-            }
+
+        //如果是请求
+        if(header[2]==ProtocolHeader.REQUEST_FLAG){
+            Request request = new Request(requestId,null);
+            obj =  request;
         }
-//        else if(header[4] == ProtocolHeader.HEARTBEAT_FLAG){
-//
-//        }
+        //否则是response
+        else {
+            Response response = new Response(requestId);
+            obj = response;
+        }
+
+        //如果是心跳请求
+        if(header[4] == ProtocolHeader.HEARTBEAT_FLAG){
+            ((HeartBeat)obj).setHeartbeat();
+        }
 
         return obj;
     }

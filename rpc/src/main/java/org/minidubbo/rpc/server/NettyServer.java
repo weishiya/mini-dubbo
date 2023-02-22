@@ -13,9 +13,9 @@ import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.URL;
 import org.minidubbo.rpc.codec.FastjsonSerialization;
-import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
-import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
-import org.minidubbo.rpc.nettyHandler.LoggingHandler;
+import org.minidubbo.rpc.nettyHandler.*;
+
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -52,6 +52,9 @@ public class NettyServer {
                         pipeline.addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         pipeline.addLast(new DubboDecoderHandler());
                         pipeline.addLast(new LoggingHandler());
+                        ch.pipeline().addLast(new IdleStateHandler(60,60,180, TimeUnit.SECONDS));
+                        ch.pipeline().addLast(new ServerIdleHandler());
+                        ch.pipeline().addLast(new HeartBeartHandler());
                         pipeline.addLast(requestHandler);
                     }
                 });

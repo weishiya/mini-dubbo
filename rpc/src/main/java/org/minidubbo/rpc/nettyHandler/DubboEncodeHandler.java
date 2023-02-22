@@ -33,11 +33,16 @@ public class DubboEncodeHandler extends MessageToByteEncoder {
             Bytes.short2bytes(ProtocolHeader.MAGIC,header);
             header[2] = ProtocolHeader.REQUEST_FLAG;
             header[3] = ProtocolHeader.TWO_WAY_FLAG;
-            header[4] = ProtocolHeader.REQUEST_OR_RESPONSE;
+            header[4] = req.isHeartbeat()?ProtocolHeader.HEARTBEAT_FLAG:ProtocolHeader.REQUEST_OR_RESPONSE;
             header[5] = serialization.getSerializationType();
             //request无需设置状态码
             //Bytes.int2bytes(0,header,6);
             Bytes.long2bytes(req.getId().longValue(),header,10);
+            //如果是心跳请求，那么直接写入消息头return
+            if(req.isHeartbeat()){
+                out.writeBytes(header);
+                return;
+            }
 
             byte[] body = serialization.serialize(req.getData());
             //写入body的长度
@@ -52,12 +57,17 @@ public class DubboEncodeHandler extends MessageToByteEncoder {
             Bytes.short2bytes(ProtocolHeader.MAGIC,header);
             header[2] = ProtocolHeader.RESPONSE_FLAG;
             header[3] = ProtocolHeader.TWO_WAY_FLAG;
-            header[4] = ProtocolHeader.REQUEST_OR_RESPONSE;
+            header[4] = response.isHeartbeat()?ProtocolHeader.HEARTBEAT_FLAG:ProtocolHeader.REQUEST_OR_RESPONSE;
             header[5] = serialization.getSerializationType();
             //写入状态码
             Bytes.int2bytes(response.getStatus(),header,6);
             //写入id
             Bytes.long2bytes(response.getId().longValue(),header,10);
+            //如果是心跳请求，那么直接写入消息头return
+            if(response.isHeartbeat()){
+                out.writeBytes(header);
+                return;
+            }
             byte[] body = new byte[0];
             if(response.getStatus() == Response.OK){
                 body = serialization.serialize(response.getData());

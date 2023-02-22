@@ -12,4 +12,6 @@ public interface Client {
     boolean isConnect();
 
     void close();
+
+    void reconnect();
 }

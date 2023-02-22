@@ -17,6 +17,9 @@ public class FastjsonSerialization implements Serialization{
 
     @Override
     public byte[] serialize(Object obj) {
+        if(obj == null){
+            return new byte[0];
+        }
         byte[] bytes = JSON.toJSONBytes(obj);
         return bytes;
     }

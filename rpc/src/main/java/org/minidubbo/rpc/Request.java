@@ -3,11 +3,12 @@ package org.minidubbo.rpc;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Request implements Serializable {
+public class Request extends HeartBeat implements Serializable {
 
     private final static AtomicLong ID_GENERATOR = new AtomicLong(0);
     private final long id;
     private Object data;
+
     public Request(long id,Object data){
         this.id = id;
         this.data = data;

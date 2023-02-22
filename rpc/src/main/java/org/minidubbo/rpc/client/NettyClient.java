@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.minidubbo.rpc.Client;
 import org.minidubbo.rpc.DefaultFuture;
@@ -14,11 +15,16 @@ import org.minidubbo.rpc.Request;
 import org.minidubbo.rpc.URL;
 import org.minidubbo.rpc.codec.FastjsonSerialization;
 import org.minidubbo.rpc.exception.RpcException;
-import org.minidubbo.rpc.nettyHandler.DubboDecoderHandler;
-import org.minidubbo.rpc.nettyHandler.DubboEncodeHandler;
-import org.minidubbo.rpc.nettyHandler.LoggingHandler;
+import org.minidubbo.rpc.nettyHandler.*;
+import org.minidubbo.rpc.timer.HashedWheelTimer;
+import org.minidubbo.rpc.timer.Timeout;
+import org.minidubbo.rpc.timer.Timer;
+import org.minidubbo.rpc.timer.TimerTask;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class NettyClient implements Client {
@@ -35,10 +41,18 @@ public class NettyClient implements Client {
 
     private boolean isConnected = false;
 
+    private static Map<Channel,NettyClient> CLIENT_MAP = new ConcurrentHashMap<>();
+
+    static Timer TIMER = new HashedWheelTimer();
+
     public NettyClient(URL url, ChannelHandler clientHandler){
         this.url = url;
         this.clientHandler = clientHandler;
         open();
+    }
+
+    public static NettyClient getClient(Channel channel){
+        return CLIENT_MAP.get(channel);
     }
 
     private void open(){
@@ -56,6 +70,9 @@ public class NettyClient implements Client {
                         ch.pipeline().addLast(new DubboEncodeHandler(new FastjsonSerialization()));
                         ch.pipeline().addLast(new DubboDecoderHandler());
                         ch.pipeline().addLast(new LoggingHandler());
+                        ch.pipeline().addLast(new IdleStateHandler(60,30,120, TimeUnit.SECONDS));
+                        ch.pipeline().addLast(new ClientIdleHandler());
+                        ch.pipeline().addLast(new HeartBeartHandler());
 
                         ch.pipeline().addLast(clientHandler);
                     }
@@ -87,6 +104,9 @@ public class NettyClient implements Client {
                 this.isConnected = true;
                 Channel channel = connectFuture.channel();
                 NettyClient.this.channel = channel;
+                CLIENT_MAP.put(channel,this);
+            }else {
+                log.warn("can not connect server {} {}",url.getIp(), url.getPort());
             }
         }
 
@@ -94,13 +114,22 @@ public class NettyClient implements Client {
 
     @Override
     public boolean isConnect() {
-        return isConnected;
+        return channel!=null && channel.isActive();
     }
 
     @Override
     public void close() {
         channel.close();
         eventLoopGroup.shutdownGracefully();
+    }
+
+    @Override
+    public void reconnect() {
+        channel.close().addListener((future) -> {
+           if(future.isSuccess()){
+               this.connect();
+           }
+        });
     }
 
 

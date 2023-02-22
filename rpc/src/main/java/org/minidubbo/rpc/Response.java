@@ -2,7 +2,7 @@ package org.minidubbo.rpc;
 
 import java.io.Serializable;
 
-public class Response implements Serializable {
+public class Response extends HeartBeat implements Serializable {
 
     public static final int OK = 20;
 
@@ -20,6 +20,7 @@ public class Response implements Serializable {
     private Object data;
     private int status = Response.OK;
     private String errorMessage;
+
     public Response(long id){
 
         this.id = id;
