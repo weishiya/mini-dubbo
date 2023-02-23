@@ -85,7 +85,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
     }
 
     private void initProtocol() {
-        protocol = new DubboProtocol();
+        protocol = new DubboProtocol("");
     }
 
     private Invoker createInvoker(){

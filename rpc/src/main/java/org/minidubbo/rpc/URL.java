@@ -112,4 +112,53 @@ public class URL implements Serializable {
     public void setInterfaceName(String interfaceName) {
         this.interfaceName = interfaceName;
     }
+
+    @Override
+    public String toString(){
+        StringBuilder buf = new StringBuilder();
+        if (StringUtils.isNotEmpty(getProtocol())) {
+            buf.append(getProtocol());
+            buf.append("://");
+        }
+
+        if (StringUtils.isNotEmpty(getIp())) {
+            buf.append(getIp());
+            if (getPort() > 0) {
+                buf.append(':');
+                buf.append(getPort());
+            }
+        }
+        String path = getServiceKey();
+
+        if (StringUtils.isNotEmpty(path)) {
+            buf.append('/');
+            buf.append(path);
+        }
+
+        return buf.toString();
+    }
+
+    public String toPath(){
+        StringBuilder buf = new StringBuilder();
+        if (StringUtils.isNotEmpty(getProtocol())) {
+            buf.append(getProtocol());
+            buf.append("%");
+        }
+
+        if (StringUtils.isNotEmpty(getIp())) {
+            buf.append(getIp());
+            if (getPort() > 0) {
+                buf.append(':');
+                buf.append(getPort());
+            }
+        }
+        String path = getServiceKey();
+
+        if (StringUtils.isNotEmpty(path)) {
+            buf.append('%');
+            buf.append(path);
+        }
+
+        return buf.toString();
+    }
 }

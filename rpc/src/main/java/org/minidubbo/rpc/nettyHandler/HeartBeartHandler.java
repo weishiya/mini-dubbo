@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class HeartBeartHandler extends ChannelDuplexHandler {
 
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception{
         Channel channel = ctx.channel();

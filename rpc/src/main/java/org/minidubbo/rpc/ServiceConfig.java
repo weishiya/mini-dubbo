@@ -27,6 +27,8 @@ public class ServiceConfig<T> {
 
     private URL providerUrl;
 
+    private String registryAddress;
+
     private InvocationHandler invocationHandler;
 
     private ServerBootstrap bootstrap;
@@ -76,7 +78,7 @@ public class ServiceConfig<T> {
     }
 
     private void initProtocol() {
-        protocol = new DubboProtocol();
+        protocol = new DubboProtocol(registryAddress);
     }
 
     private void buildURL() {
@@ -106,6 +108,14 @@ public class ServiceConfig<T> {
 
     private  Exporter<?> doExport(Invoker<?> invoker) {
         return protocol.export(invoker);
+    }
+
+    public void setRegistryAddress(String registryAddress){
+        this.registryAddress = registryAddress;
+    }
+
+    public String getRegistryAddress(){
+        return registryAddress;
     }
 
     public void shutdown(){

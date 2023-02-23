@@ -17,6 +17,8 @@ import org.minidubbo.rpc.executor.DefaultExecutorRepository;
 import org.minidubbo.rpc.invoker.DubboInvoker;
 import org.minidubbo.rpc.nettyHandler.ClientHandler;
 import org.minidubbo.rpc.nettyHandler.MessageOnlyServerHandler;
+import org.minidubbo.rpc.registry.RegistryService;
+import org.minidubbo.rpc.registry.impl.ZookeeperRegistry;
 import org.minidubbo.rpc.server.NettyServer;
 
 import java.util.ArrayList;
@@ -36,6 +38,13 @@ public class DubboProtocol implements Protocol {
     private Map<String, List<Client>> sharedClient = new ConcurrentHashMap<>();
 
     private Flusher<DubboEvent> flusher;
+
+    private RegistryService registryService;
+
+    public DubboProtocol(String zkpath){
+        registryService = new ZookeeperRegistry(zkpath);
+        registryService.start();
+    }
 
     org.minidubbo.rpc.async.RequestEventHandler  requestEventHandler = new RequestEventHandler () {
         @Override
@@ -70,6 +79,7 @@ public class DubboProtocol implements Protocol {
 
     @Override
     public <T> Exporter<T> export(Invoker<T> invoker) {
+
         URL url = invoker.getUrl();
 
         String serviceKey = url.getServiceKey();
@@ -79,10 +89,12 @@ public class DubboProtocol implements Protocol {
         ExecutorService defaultExecutorService = DefaultExecutorRepository.INSTANCE.getDefaultExecutorService();
         try {
             openServer(url,defaultExecutorService);
+
         } catch (Throwable throwable) {
            log.info("oepn server error",throwable);
             return dubboExporter;
         }
+        registryService.register(url);
 
         dubboExporter.exported();
 
