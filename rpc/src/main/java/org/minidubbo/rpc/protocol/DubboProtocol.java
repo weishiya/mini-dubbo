@@ -39,7 +39,7 @@ public class DubboProtocol implements Protocol {
 
     private Flusher<DubboEvent> flusher;
 
-    private RegistryService registryService;
+    protected RegistryService registryService;
 
     public DubboProtocol(String zkpath){
         registryService = new ZookeeperRegistry(zkpath);

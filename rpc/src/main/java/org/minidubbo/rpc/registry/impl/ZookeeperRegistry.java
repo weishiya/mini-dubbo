@@ -13,6 +13,9 @@ import org.apache.zookeeper.CreateMode;
 import org.minidubbo.rpc.URL;
 import org.minidubbo.rpc.exception.RpcException;
 import org.minidubbo.rpc.registry.RegistryService;
+
+import java.util.List;
+
 @Slf4j
 public class ZookeeperRegistry implements RegistryService {
 
@@ -49,6 +52,11 @@ public class ZookeeperRegistry implements RegistryService {
         } catch (Exception e) {
             throw new RpcException("Failed to register " + url + " to zookeeper " + url + ", cause: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<URL> serviceDiscovery(String category) {
+        return null;
     }
 
     @Override
