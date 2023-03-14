@@ -30,7 +30,7 @@ public abstract   class AbstractClusterInvoker implements ClusterInvoker{
     public Result invoke(Invocation invocation) throws RpcException {
         List<Invoker> allInvokers = directory.getAllInvokers();
 
-        return null;
+        return doInvoker(allInvokers,invocation);
     }
 
     @Override

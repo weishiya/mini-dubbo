@@ -158,4 +158,8 @@ public class DubboProtocol implements Protocol {
         Client[] res = new Client[num];
         return clients.toArray(res);
     }
+
+    public RegistryService getRegistryService(){
+        return registryService;
+    }
 }

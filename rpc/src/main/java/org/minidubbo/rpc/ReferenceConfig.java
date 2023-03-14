@@ -4,6 +4,7 @@ package org.minidubbo.rpc;
 import org.minidubbo.common.Consant;
 import org.minidubbo.common.NetUtil;
 import org.minidubbo.rpc.protocol.DubboProtocol;
+import org.minidubbo.rpc.protocol.ServiceDiscoveryProtocol;
 import org.minidubbo.rpc.proxy.JDKProxyFactory;
 import org.minidubbo.rpc.proxy.ProxyFactory;
 
@@ -85,7 +86,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
     }
 
     private void initProtocol() {
-        protocol = new DubboProtocol("");
+        protocol = new ServiceDiscoveryProtocol("127.0.0.1:2181");
     }
 
     private Invoker createInvoker(){
