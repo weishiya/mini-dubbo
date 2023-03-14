@@ -32,4 +32,6 @@
 
 13.分支heartbeat，心跳检测机制，client给server发送ping然后收到pong，一旦没有收到pong，就发起重连。
 
-14.分支registry-server,provider把url注册到zookeeper
+14.分支registry-server,provider把url注册到zookeeper。
+
+15.分支registry-consumer，consumer服务发现和集群容错机制。Directory的作用的把zk的provider的Url生成Invoker保存下来。
