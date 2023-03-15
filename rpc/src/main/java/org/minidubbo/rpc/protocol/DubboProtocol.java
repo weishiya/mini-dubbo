@@ -120,8 +120,8 @@ public class DubboProtocol implements Protocol {
     }
 
     private Client[] getClient(URL url) {
-        Boolean share = (Boolean)url.getParams().get(Consant.SHARE_CONNECTIONS_KEY);
-        Integer connectionNum = (Integer)url.getParams().get(Consant.CONNECTIONS_KEY);
+        Boolean share = (Boolean)url.getParams().getOrDefault(Consant.SHARE_CONNECTIONS_KEY,true);
+        Integer connectionNum = (Integer)url.getParams().getOrDefault(Consant.CONNECTIONS_KEY,1);
         if(share){
             return useSharedClient(url,connectionNum);
         }

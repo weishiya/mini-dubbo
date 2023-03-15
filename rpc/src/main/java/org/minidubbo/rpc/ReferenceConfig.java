@@ -29,6 +29,8 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
 
     private String version;
 
+    private String registryAddress;
+
     public void setInterfaceClass(Class<?> interfaceClass){
         this.interfaceClass = interfaceClass;
     }
@@ -86,7 +88,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
     }
 
     private void initProtocol() {
-        protocol = new ServiceDiscoveryProtocol("127.0.0.1:2181");
+        protocol = new ServiceDiscoveryProtocol(registryAddress);
     }
 
     private Invoker createInvoker(){
@@ -101,5 +103,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
         ref = (T) proxyFactory.getProxy(interfaceClass,invocationHandler);
     }
 
-
+    public void setRegistryAddress(String registryAddress){
+        this.registryAddress = registryAddress;
+    }
 }

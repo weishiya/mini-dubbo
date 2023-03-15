@@ -8,7 +8,7 @@ public interface RegistryService {
     void start();
     void register(URL url);
     void unregister(URL url);
-    List<URL> serviceDiscovery(String category);
+    List<URL> serviceDiscovery(String category) throws Exception;
     void subscribe(URL url);
     void unsubscribe(URL url);
     void destory();

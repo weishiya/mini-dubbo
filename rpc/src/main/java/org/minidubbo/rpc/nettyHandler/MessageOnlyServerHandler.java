@@ -1,5 +1,6 @@
 package org.minidubbo.rpc.nettyHandler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.minidubbo.rpc.Request;
@@ -11,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * 读写事件由线程池处理
  */
+@ChannelHandler.Sharable
 public class MessageOnlyServerHandler extends ChannelInboundHandlerAdapter {
 
     private ExecutorService executor;

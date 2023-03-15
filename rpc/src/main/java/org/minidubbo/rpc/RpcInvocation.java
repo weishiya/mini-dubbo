@@ -32,7 +32,7 @@ public class RpcInvocation implements Invocation, Serializable {
         this.attachment = new HashMap<>();
         if (attachment != null){
             //超时时间
-            this.attachment.put(Consant.TIMEOUT_KEY,attachment.get(Consant.TIMEOUT_KEY));
+            this.attachment.put(Consant.TIMEOUT_KEY,attachment.getOrDefault(Consant.TIMEOUT_KEY,Consant.DEFAULT_TIMEOUT));
         }
     }
 

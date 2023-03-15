@@ -54,6 +54,9 @@ public class ServiceDiscoveryDirectory<T> implements Directory{
     }
 
     private void doRefresh() {
+        if(providerUrls == null){
+            return;
+        }
         for (URL providerUrl : providerUrls) {
             Invoker<T> invoker = protocol.refer(clazz, providerUrl);
             allInvokers.add(invoker);
