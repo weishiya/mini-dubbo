@@ -1,26 +1,25 @@
 # mini-dubbo
 从0到1写一个简易版的dubbo框架
 
-分为5个大部分，用不同的分支一步步演化成一个完整的rpc框架，第一部分是简单的rpc模型演示，第二部分是dubbo协议的封装，包括网络协议封装进行编解码和hessian协议进行序列化，需要读者对netty的使用有一定了解，第三部分是引入注册中心进行provider服务暴露和consumer服务发现，第四部分是集群容错和负载均衡，第五部分是引入SPI机制，支持用户自定义扩展
+分为5个大部分，用不同的分支一步步演化成一个完整的rpc框架
 
-1.分支 provider-and-consumer 是一个最简单的rpc模型
-可以看到，provider模块依赖的provider-api模块对HelloService进行了实现，consumer想调用HelloService的hello方法。
+1.分支 provider-and-consumer 是一个最简单的rpc模型，provider模块依赖的provider-api模块对HelloService进行了实现，consumer想调用HelloService的hello方法。
 
 2.分支consumer-proxy是针对消费者方要引用的接口生成代理，核心思想是，针对要远程调用的接口生成代理对象，在代理对象里发起网络请求请求provider服务的提供方，运行一下consumer的main方法，可以看到控制台打印出了日志。
 
 3.分支provider-server模块，是provider启动了网络服务，端口是20883，这就意味着外界可以通过网络请求访问provider。运行provider的main方法，然后在浏览器输入http://127.0.0.1:20883/hello
-可以看到浏览器通过http请求访问到了HelloServiceImpl的hello方法。可以想到，只要在consumer端的代理对象发起一次http请求，就是一次rpc调用了（感兴趣可以自己实现一下）。
+用浏览器通过http请求访问到了HelloServiceImpl的hello方法。可以想到，只要在consumer端的代理对象发起一次http请求，就是一次rpc调用了（感兴趣可以自己实现一下）。
 这里为了演示方便，网络协议采用了最常见的http协议，http协议用在网络通信有三个问题，一个是短链接，另外一个是报文格式过于臃肿，最后是可以采用体积更小的序列化协议如protobuf，hessian等，一个公司集群内网通信不用这么复杂，为了consumer和provider端更高效快速的通信，就要开发更简单的长连接的dubbo协议。
 
-4.分支invoker模块，在封装协议以前，先抽象出来常用的组件，免得代码越写越乱，对常用的组件做了一层抽象，关注一下ServiceConfig的export方法和ReferenceConfig的get方法，可以看到对以前的逻辑进行了一些封装。Protocol，Invoker，URL等组件的作用均在注释中写明。
+4.分支invoker模块，在封装协议以前，先抽象出来常用的组件，对常用的组件做了一层抽象，关注一下ServiceConfig的export方法和ReferenceConfig的get方法，可以看到对以前的逻辑进行了一些封装。Protocol，Invoker，URL等组件的作用均在注释中写明。
 
 5.分支protocol模块，JDKProxyFactory的getInvoker实现了provider端要使用的invoker，dubbo export方法对服务进行了暴露（还需要定义编解码器来实现dubbo协议），运行provider的main方法可以看到网络端口依据开启。
 
-6.分支protocol-refer模块，DubboProtocol实现了refer方法，启动客户端链接server，运行provider的main方法，然后运行Consumer的main，可以看到provider控制台输出了日志 client connected，AbstractInvoker的注释留意一下，可以考虑服务端的返回数据包的时候怎么唤醒线程。因为现在还没定义编解码器，还不能发送数据包。接下来就是第二大章节，封装协议。
+6.分支protocol-refer模块，DubboProtocol实现了refer方法，启动客户端链接server，运行provider的main方法，然后运行Consumer的main，可以看到provider控制台输出了日志 client connected。因为现在还没定义编解码器，还不能发送数据包。接下来就是第二大章节，封装协议。
 
-7.分支minidubbo-protocol封装了协议,DubboEncodeHandler 和 DubboDecoderHandler，运行provider和consumer，可以看到consumer端接收到了provider端发回的响应。序列号协议这里先用最简单FastJson。protocol-refer遗留了一个问题，如何唤醒线程，现在响应数据收到了，答案将在下一章揭晓。
+7.分支minidubbo-protocol封装了协议,DubboEncodeHandler 和 DubboDecoderHandler，运行provider和consumer，可以看到consumer端接收到了provider端发回的响应。序列号协议这里先用最简单FastJson。
 
-8.分支write-response，这里ClientHandler唤醒了原本发送请求阻塞的线程。同时，这一章节也实现了自定义超时事件的功能。
+8.分支write-response，这里ClientHandler唤醒了原本发送请求阻塞的线程。同时，这里也实现了自定义超时事件的功能。
 
 9.分支timeot,用时间轮算法来进行超时计算，时间到了就抛出超时异常，见TimeoutCheckTask。运行单元测试TimeoutTest的testTimeout和testTimeout2，可以发现当超时时间是6秒是不超时的。
 
@@ -35,3 +34,5 @@
 14.分支registry-server,provider把url注册到zookeeper。
 
 15.分支registry-consumer，consumer服务发现和集群容错机制。Directory的作用的把zk的provider的Url生成Invoker保存下来。运行RegistryTest和ConsumerRegistryTest。
+
+16.分支shutdown，优化关机，包括从注册中心取消注册和销毁所有的网络连接和线程池。
