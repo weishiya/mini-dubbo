@@ -9,7 +9,7 @@
 
 3.分支provider-server模块，是provider启动了网络服务，端口是20883，这就意味着外界可以通过网络请求访问provider。运行provider的main方法，然后在浏览器输入http://127.0.0.1:20883/hello
 用浏览器通过http请求访问到了HelloServiceImpl的hello方法。可以想到，只要在consumer端的代理对象发起一次http请求，就是一次rpc调用了（感兴趣可以自己实现一下）。
-这里为了演示方便，网络协议采用了最常见的http协议，http协议用在网络通信有三个问题，一个是短链接，另外一个是报文格式过于臃肿，最后是可以采用体积更小的序列化协议如protobuf，hessian等，一个公司集群内网通信不用这么复杂，为了consumer和provider端更高效快速的通信，就要开发更简单的长连接的dubbo协议。
+这里为了演示方便，网络协议采用了最常见的http协议，接下来就要开发更简单的长连接的dubbo协议。
 
 4.分支invoker模块，在封装协议以前，先抽象出来常用的组件，对常用的组件做了一层抽象，关注一下ServiceConfig的export方法和ReferenceConfig的get方法，可以看到对以前的逻辑进行了一些封装。Protocol，Invoker，URL等组件的作用均在注释中写明。
 
