@@ -48,6 +48,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
     }
     //init
     private void init(){
+        ApplicationDeployer.INSTANCE.init();
         //初始化代理工厂
         initProxyFactory();
         //构建url
@@ -89,6 +90,7 @@ public class ReferenceConfig<T> extends AbstractMethodConfig{
 
     private void initProtocol() {
         protocol = new ServiceDiscoveryProtocol(registryAddress);
+        ApplicationDeployer.INSTANCE.addProtocol(protocol);
     }
 
     private Invoker createInvoker(){

@@ -21,9 +21,7 @@ import org.minidubbo.rpc.registry.RegistryService;
 import org.minidubbo.rpc.registry.impl.ZookeeperRegistry;
 import org.minidubbo.rpc.server.NettyServer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -38,6 +36,8 @@ public class DubboProtocol implements Protocol {
     private Map<String, List<Client>> sharedClient = new ConcurrentHashMap<>();
 
     private Flusher<DubboEvent> flusher;
+
+    private Set<URL> allUrls = new HashSet<>();
 
     protected RegistryService registryService;
 
@@ -100,7 +100,21 @@ public class DubboProtocol implements Protocol {
 
         exporterMap.put(serviceKey,dubboExporter);
 
+        allUrls.add(url);
+
         return dubboExporter;
+    }
+
+    @Override
+    public void destory() {
+        //从注册中心下线
+        allUrls.forEach(t->registryService.unregister(t));
+        //销毁
+        registryService.destory();
+        //关闭所有网络连接
+        sharedClient.values().forEach(t->t.forEach(v->v.close()));
+        //关闭内存队列
+        flusher.shutdown();
     }
 
     private void openServer(URL url,ExecutorService executorService) throws Throwable {

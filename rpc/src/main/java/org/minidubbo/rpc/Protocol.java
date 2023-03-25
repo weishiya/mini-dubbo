@@ -20,4 +20,6 @@ public interface Protocol {
      * @return
      */
     <T> Exporter<T> export(Invoker<T> invoker);
+
+    void destory();
 }

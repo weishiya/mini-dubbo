@@ -40,6 +40,11 @@ public class ServiceDiscoveryProtocol implements Protocol {
         return null;
     }
 
+    @Override
+    public void destory() {
+        protocol.destory();
+    }
+
 
     private String toCategory(URL url){
         String interfaceName = url.getInterfaceName();
