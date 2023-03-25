@@ -1,7 +1,7 @@
 # mini-dubbo
 从0到1写一个简易版的dubbo框架
 
-分为5个大部分，用不同的分支一步步演化成一个完整的rpc框架
+用不同的分支一步步演化成一个完整的rpc框架
 
 1.分支 provider-and-consumer 是一个最简单的rpc模型，provider模块依赖的provider-api模块对HelloService进行了实现，consumer想调用HelloService的hello方法。
 
