@@ -36,3 +36,5 @@
 15.分支registry-consumer，consumer服务发现和集群容错机制。Directory的作用的把zk的provider的Url生成Invoker保存下来。运行RegistryTest和ConsumerRegistryTest。
 
 16.分支shutdown，优化关机，包括从注册中心取消注册和销毁所有的网络连接和线程池。
+
+17.分支spring-1.0，集成spring，用@MiniDubboReference注解便可自动注入代理，原理是用注册BeanDefinition,然后FactoryBean生成代理类，详见ReferenceBean
