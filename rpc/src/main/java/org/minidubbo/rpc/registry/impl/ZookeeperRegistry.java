@@ -25,7 +25,10 @@ public class ZookeeperRegistry implements RegistryService {
 
     private CuratorFramework  curatorFramework;
 
+    private String zookeeperPath;
+
     public ZookeeperRegistry(String zookeeperpath){
+        this.zookeeperPath = zookeeperpath;
         curatorFramework = CuratorFrameworkFactory.newClient(zookeeperpath, new RetryOneTime(3000));
     }
 
@@ -33,6 +36,7 @@ public class ZookeeperRegistry implements RegistryService {
     @Override
     public void start() {
         curatorFramework.start();
+        log.info("connect zk success");
     }
 
     @Override

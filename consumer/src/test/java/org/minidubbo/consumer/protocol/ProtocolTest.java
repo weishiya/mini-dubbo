@@ -11,15 +11,17 @@ public class ProtocolTest {
     @Test
     public void test() throws InterruptedException {
         ReferenceConfig<HelloService> referenceConfig = new ReferenceConfig<>();
+        referenceConfig.setRegistryAddress("127.0.0:2181");
         referenceConfig.setInterfaceClass(HelloService.class);
         referenceConfig.setShareconnections(true);
         referenceConfig.setConnections(1);
-        referenceConfig.setTimeout(3);
+        referenceConfig.setTimeout(1);
         HelloService helloService = referenceConfig.get();
-
-        for (int i = 0; i < 10; i++) {
-            new Thread(new SendTask(helloService),"thread "+i).start();
-        }
+        String result = helloService.hello();
+        System.out.println(result);
+//        for (int i = 0; i < 10; i++) {
+//            new Thread(new SendTask(helloService),"thread "+i).start();
+//        }
         new CountDownLatch(1).await();
     }
 

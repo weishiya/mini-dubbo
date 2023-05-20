@@ -114,7 +114,9 @@ public class DubboProtocol implements Protocol {
         //关闭所有网络连接
         sharedClient.values().forEach(t->t.forEach(v->v.close()));
         //关闭内存队列
-        flusher.shutdown();
+        if(flusher!=null){
+            flusher.shutdown();
+        }
     }
 
     private void openServer(URL url,ExecutorService executorService) throws Throwable {

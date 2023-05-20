@@ -11,6 +11,7 @@ public class ProtocolProviderTest {
         HelloService helloService = new HelloServiceImpl();
         serviceConfig.setRef(helloService);
         serviceConfig.setInterfaceClass(HelloService.class);
+        serviceConfig.setRegistryAddress("127.0.0.1:2181");
         serviceConfig.export();
     }
 }

@@ -5,6 +5,7 @@ import org.minidubbo.rpc.Invocation;
 import org.minidubbo.rpc.Invoker;
 import org.minidubbo.rpc.Result;
 import org.minidubbo.rpc.exception.RpcException;
+import org.minidubbo.rpc.result.RpcResult;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public class FailoverClusterInvoker extends AbstractClusterInvoker {
                 log.error("failover cluster",e);
             }
         }
-        return null;
+        return new RpcResult();
     }
 }
